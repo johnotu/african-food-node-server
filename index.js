@@ -33,7 +33,8 @@ const foodSchema = new mongoose.Schema({
   name: { type: String, required: true },
   image: { type: String },
   description: { type: String },
-  rating: { type: Number, min: 0, max: 5, default: 0 }
+  rating: { type: Number, min: 0, max: 5, default: 0 },
+  recipe: { type: String }
 });
 
 // Define food model from schema
@@ -60,6 +61,11 @@ app.get('/', (req, res) => {
  */
 // Create a new food entry (C)
 app.post('/food', (req, res) => {
+  if (!req.body.name || !req.body.image) {
+    return res.status(400).json({
+      msg: 'Request body is missing "name" or "image" parameter'
+    });
+  }
   const food = new Food(req.body);
   food.save()
     .then(food => res.status(201).json({
